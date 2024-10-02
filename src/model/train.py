@@ -78,7 +78,7 @@ for epoch in range(STARTING_EPOCH + 1, NUM_EPOCHS + 1):
     print(f'Loss: {avg_loss}')
     
     # from 50 to 50 epochs save the current model state
-    if epoch % 20 == 0:
+    if epoch % 5 == 0:
         torch.save(model.state_dict(), f'models/model_{epoch}')
         torch.save(avg_losses, f'models/loss_{epoch}.pt')
 
