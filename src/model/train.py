@@ -21,7 +21,7 @@ args = parser.parse_args()
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 INPUT_DIM = 256 # input image is going to be resized to this size
 DOWNGRADE_FACTOR = 10 # by how much the image resolution is going to be reduced (downgrade_factor = 10 ==> img.shape /= 10)
-NUM_EPOCHS = 20
+NUM_EPOCHS = 200
 BATCH_SIZE = 1
 LR_RATE = args.learning_rate # original is 3e-4
 STARTING_EPOCH = args.starting_epoch # its from where you last stopped, just for naming the model files
@@ -78,7 +78,7 @@ for epoch in range(STARTING_EPOCH + 1, NUM_EPOCHS + 1):
     print(f'Loss: {avg_loss}')
     
     # from 50 to 50 epochs save the current model state
-    if epoch % 50 == 0:
+    if epoch % 20 == 0:
         torch.save(model.state_dict(), f'models/model_{epoch}')
         torch.save(avg_losses, f'models/loss_{epoch}.pt')
 
