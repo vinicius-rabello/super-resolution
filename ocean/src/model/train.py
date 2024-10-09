@@ -15,21 +15,23 @@ parser = argparse.ArgumentParser(description="This parser contains the starting_
 parser.add_argument('--starting_epoch', type=int, required=True, help='epoch we are starting training from,\
                     this is for naming the files that are going to be saved')
 parser.add_argument('--learning_rate', type=float, required=True, help='the learning rate used for training the model')
+parser.add_argument('--downgrade_factor', type=int, required=True, help='by how much the training images are going to be downsampled')
+parser.add_argument('--device', type=int, required=True, help='in which device the model is going to be trained on')
 args = parser.parse_args()
 
 # Initialize some constants
-torch.cuda.set_device(7) # set the training to be done on device 7
+torch.cuda.set_device(args.device) # set the training to be done on device 7
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 INPUT_DIM_X = 272 # input image is going to be resized to this size
 INPUT_DIM_Y = 160
-DOWNGRADE_FACTOR = 4 # by how much the image resolution is going to be reduced (downgrade_factor = 10 ==> img.shape /= 10)
+DOWNGRADE_FACTOR = args.downgrade_factor # by how much the image resolution is going to be reduced (downgrade_factor = 10 ==> img.shape /= 10)
 NUM_EPOCHS = 200
 BATCH_SIZE = 1
 LR_RATE = args.learning_rate # original is 3e-4
 STARTING_EPOCH = args.starting_epoch # its from where you last stopped, just for naming the model files
 
 # loading the dataset
-data_path = 'ocean/data/dataset/psi1/train_set' # setting path
+data_path = 'ocean/data/dataset/psi2/train_set' # setting path
 # sequence of transformations to be done
 transform = transforms.Compose([transforms.Resize((INPUT_DIM_X, INPUT_DIM_Y)),   # sequence of transformations to be done
                                 transforms.Grayscale(num_output_channels=1), # on each image (resize, greyscale,
@@ -42,7 +44,7 @@ train_loader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True) 
 # if starting epoch is not 0, load from last trained model
 model = SuperResolution().to(DEVICE)
 if STARTING_EPOCH != 0:
-    model.load_state_dict(torch.load(f'models/model_{STARTING_EPOCH}'))
+    model.load_state_dict(torch.load(f'ocean/models/model_psi2_x16_{STARTING_EPOCH}'))
 
 # defining adam optimizer and mean squared error loss
 optimizer = torch.optim.Adam(model.parameters(), lr=LR_RATE) # defining optimizer
@@ -81,8 +83,8 @@ for epoch in range(STARTING_EPOCH + 1, NUM_EPOCHS + 1):
     
     # from 50 to 50 epochs save the current model state
     if epoch % 20 == 0:
-        torch.save(model.state_dict(), f'ocean/models/model_psi1_x4_{epoch}')
-        torch.save(avg_losses, f'ocean/models/loss_psi1_x4_{epoch}.pt')
+        torch.save(model.state_dict(), f'ocean/models/model_psi2_x16_{epoch}')
+        torch.save(avg_losses, f'ocean/models/loss_psi2_x16_{epoch}.pt')
 
 # save model at end of training
-torch.save(model.state_dict(), 'ocean/models/model_psi1_x4')
+torch.save(model.state_dict(), 'ocean/models/model_psi2_x16')
