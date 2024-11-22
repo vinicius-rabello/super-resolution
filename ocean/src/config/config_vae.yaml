@@ -1,0 +1,9 @@
+training:
+  starting_epoch: 0
+  learning_rate: 0.0003
+  device: "7"    # Defina o dispositivo: "cuda:0" ou "cpu"
+
+model:
+  init_dim: 8
+  latent_dim: 3
+  kernel_size: 4
