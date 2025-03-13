@@ -30,7 +30,7 @@ class SuperResolution(nn.Module):
     
 if __name__=='__main__':
     batch_size = 1
-    x=torch.randn(batch_size, 1, 272, 160)
+    x=torch.randn(batch_size, 1, 320, 544)
     model=SuperResolution()
     y = model(x)
-    print(x.shape)
+    print(x.shape, y.shape)
