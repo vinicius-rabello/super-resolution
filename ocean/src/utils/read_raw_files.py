@@ -1,6 +1,8 @@
 import numpy as np
 import os
 import shutil
+import cv2
+from tqdm import tqdm
 
 if os.path.exists('./ocean/data/dataset'):
     shutil.rmtree('./ocean/data/dataset')
@@ -36,7 +38,7 @@ ns = [i for i in range(int(n))]
 test_set_idx = np.random.choice(ns, int(150*0.2), replace=False)
 for i, path in enumerate(paths):
     arr = np.load(hr_folder_path + '/' + path)
-    for j, sample in enumerate(arr):
+    for j, sample in tqdm(enumerate(arr)):
         sample = sample.reshape(544, 320)
         if j < 150:
             psi = 'psi1'
@@ -48,13 +50,13 @@ for i, path in enumerate(paths):
         else:
             set = 'train_set' 
 
-        np.save(f'./ocean/data/dataset/hr/{psi}/{set}/0/{i}_{j}.npy', sample)
+        cv2.imwrite(f'./ocean/data/dataset/hr/{psi}/{set}/0/{i}_{j}.png', sample*255)
 
 lr_folder_path = './ocean/data/sr_dataset/lr_40_68'
 paths = os.listdir(lr_folder_path)
 for i, path in enumerate(paths):
     arr = np.load(lr_folder_path + '/' + path)
-    for j, sample in enumerate(arr):
+    for j, sample in tqdm(enumerate(arr)):
         sample = sample.reshape(68, 40)
         if j < 150:
             psi = 'psi1'
@@ -66,4 +68,4 @@ for i, path in enumerate(paths):
         else:
             set = 'train_set' 
 
-        np.save(f'./ocean/data/dataset/lr/{psi}/{set}/0/{i}_{j}.npy', sample)
+        cv2.imwrite(f'./ocean/data/dataset/lr/{psi}/{set}/0/{i}_{j}.png', sample*255)

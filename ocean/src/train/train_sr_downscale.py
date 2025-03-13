@@ -25,7 +25,8 @@ parser.add_argument('--device', type=int, required=True, help='in which device t
 args = parser.parse_args()
 
 # Initialize some constants
-torch.cuda.set_device(args.device) # set the training to be done on device 7
+if torch.cuda.is_available():
+    torch.cuda.set_device(args.device) # set the training to be done on device 7
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 INPUT_DIM_X = 320 # input image is going to be resized to this size
 INPUT_DIM_Y = 544
